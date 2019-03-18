@@ -323,7 +323,6 @@ public class Main{
     int tri1Idx = 0;
     int tri2Idx = 0;
 
-    //System.out.println("here");
     while(tri1[tri1Idx] != null){
       boolean containsEdge = false;
       tri2Idx = 0;
