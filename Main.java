@@ -76,44 +76,59 @@ public class Main{
     //get the polygon to the left of the diagonal
     // if it's a triangle, then leave startIndex1, startIndex2 in there
 
-    int offset = 0;
+    //int offset = 0;
     boolean start = true;
     int numTriangulations = 0;
-    while((startIndex2+offset)%n != n-1 || start == true){
+    int arrayDataStartIdx = triangulationsData[n-1].getEndIdx();
+    while(startIndex1%n != n-2 || start == true){
       start = false;
+      boolean innerStart = true;
+      startIndex2 = (startIndex1+2)%n;
+      while((startIndex2%n < n || innerStart == true) && startIndex2 > startIndex1 && startIndex2 - startIndex1 < n -1){
+        innerStart = false;
 
-      HashMap<Integer, Integer> left = getLeftMap(startIndex1, startIndex2);
-      //System.out.println(left.toString());
+        HashMap<Integer, Integer> left = getLeftMap(startIndex1, startIndex2);
+        //System.out.println(left.toString());
 
-      HashMap<Integer, Integer> right = getRightMap(startIndex2, startIndex1, n);
-      //System.out.println(right.toString());
+        HashMap<Integer, Integer> right = getRightMap(startIndex2, startIndex1, n);
+        //System.out.println(right.toString());
+        int leftSize = left.size();
+        //if(leftSize < 3) continue;
+        System.out.println(startIndex1 + " , "+ startIndex2+ "  left size: "+ leftSize);
+        int leftStartIdx = triangulationsData[leftSize].getStartIdx();
+        int leftEndIdx = triangulationsData[leftSize].getEndIdx();
 
-      int leftSize = left.size();
-      int leftStartIdx = triangulationsData[leftSize].getStartIdx();
-      int leftEndIdx = triangulationsData[leftSize].getEndIdx();
+        int rightSize = right.size();
+        //if(rightSize < 3) continue;
+        int rightStartIdx = triangulationsData[rightSize].getStartIdx();
+        int rightEndIdx = triangulationsData[rightSize].getEndIdx();
 
 
-      int rightSize = right.size();
-      int rightStartIdx = triangulationsData[rightSize].getStartIdx();
-      int rightEndIdx = triangulationsData[rightSize].getEndIdx();
 
+        for(int leftIdx = leftStartIdx; leftIdx < leftEndIdx; leftIdx++){
+          for(int rightIdx = rightStartIdx; rightIdx < rightEndIdx; rightIdx++){
+            numTriangulations ++;
 
-      for(int leftIdx = leftStartIdx; leftIdx < leftEndIdx; leftIdx++){
-        for(int rightIdx = rightStartIdx; rightIdx < rightEndIdx; rightIdx++){
-          numTriangulations ++;
-          Edge[] triangulation = makeTriangulation(triangulations, leftIdx, rightIdx, left, right, startIndex1, startIndex2, n);
-          //create a polygon with triangulations from triangulations[leftIdx] and triangulations[rightIdx]
-          System.out.println(printTriangulation(triangulation));
-
+            Edge[] triangulation = makeTriangulation(triangulations, leftIdx, rightIdx, left, right, startIndex1, startIndex2, n);
+            //create a polygon with triangulations from triangulations[leftIdx] and triangulations[rightIdx]
+          //  while(!containsTriangulation(triangulation, triangulations, arrayDataStartIdx, numTriangulations)){
+            //  triangulation = shiftTriangulation(triangulation, n);
+            //}
+            triangulations[arrayDataStartIdx+numTriangulations] = triangulation;
+            numTriangulations ++;
+            System.out.println(printTriangulation(triangulation));
+          }
         }
+
+        //generate list of triangulations for right
+
+        startIndex2 = (startIndex2+1)%n;
       }
-
-      //generate list of triangulations for right
-
-      startIndex2++;
+      startIndex1 = (startIndex1 +1)%n;
     }
-
     System.out.println("number of triangulations: " + numTriangulations);
+    int arrayDataEndIdx = arrayDataStartIdx + numTriangulations;
+    triangulationsData[n] = new ArrayData(arrayDataStartIdx, numTriangulations, arrayDataEndIdx);
   }
 
   /*
