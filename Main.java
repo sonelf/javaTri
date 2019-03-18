@@ -37,61 +37,24 @@ public class Main{
     */
     ArrayData[] triangulationsData = new ArrayData[ARRAY_DATA_SIZE];
 
-    //providing n = 4 and n = 5 as base cases because they both have one set of unique diagonals
-    // (as in, only one pair of rotateable vertices)
-    // 3 is a base case.
+    // 3 is a base case, but it has no trianuglation.
+    //we just need one diagonal to get the algorithm started.
 
     Edge[] threeOne = new Edge[DIAG_NUM];
     threeOne[0] = new Edge(0, 2);
 
-    Edge[] fourOne = new Edge[DIAG_NUM];
-    fourOne[0] = new Edge(0, 2);
-    Edge[] fourTwo = new Edge[DIAG_NUM];
-    fourTwo[0] = new Edge(1, 3);
-
-    Edge[] fiveOne = new Edge[DIAG_NUM];
-    fiveOne[0] = new Edge(0, 2);
-    fiveOne[1] = new Edge(2, 4);
-
-    Edge[] fiveTwo = new Edge[DIAG_NUM];
-    fiveTwo[0] = new Edge(1, 3);
-    fiveTwo[1] = new Edge(0, 3);
-
-    Edge[] fiveThree = new Edge[DIAG_NUM];
-    fiveThree[0] = new Edge(2, 4);
-    fiveThree[1] = new Edge(1, 4);
-
-    Edge[] fiveFour = new Edge[DIAG_NUM];
-    fiveFour[0] = new Edge(0, 3);
-    fiveFour[1] = new Edge(0, 2);
-
-    Edge[] fiveFive = new Edge[DIAG_NUM];
-    fiveFive[0] = new Edge(1, 4);
-    fiveFive[1] = new Edge(1, 3);
-
     triangulations[0] = threeOne;
-    triangulations[1] = fourOne;
-    triangulations[2] = fourTwo;
-    triangulations[3] = fiveOne;
-    triangulations[4] = fiveTwo;
-    triangulations[5] = fiveThree;
-    triangulations[6] = fiveFour;
-    triangulations[7] = fiveFive;
-
     triangulationsData[3] = new ArrayData(0, 1, 1);
-    triangulationsData[4] = new ArrayData(1, 2, 3);
-    triangulationsData[5] = new ArrayData(3, 5, 8);
+
 
     // vertices that make up the n-gon
     Vertex[] vertices = new Vertex[ARRAY_DATA_SIZE];
     vertices[0] = new Vertex(0);
     vertices[1] = new Vertex(1);
     vertices[2] = new Vertex(2);
-    vertices[3] = new Vertex(3);
-    vertices[4] = new Vertex(4);
 
-    //will start by triangulating n=6
-    int n = 5;
+    //will start by triangulating n=4
+    int n = 3;
 
     //Triangulating process:
     while(n < 20){ //attempts to go to n=20. doesn't quite work out.
@@ -167,12 +130,18 @@ public class Main{
               if(!containsTriangulation(triangulation, triangulations, arrayDataStartIdx, numTriangulations)){
                 //adding the triangulation to our array
                 triangulations[arrayDataStartIdx+numTriangulations] = triangulation;
+                int ithTri =  numTriangulations +1;
+                if(n < 7){
 
+                  System.out.println("Triangulation # "+ ithTri + " for n = "+n+": ");
+                  System.out.println(printTriangulation(triangulation));
+
+                }
                 //making sure it is correctly sorted
                 Arrays.sort(triangulations, arrayDataStartIdx, arrayDataStartIdx+numTriangulations+1, new TriangulationComparator());
                 numTriangulations ++;
               }
-                
+
             }
           }
           //finding a new diagonal, rinse and repeat
@@ -180,7 +149,7 @@ public class Main{
       }
 
       //printing out the final results
-      System.out.println("Number of Triangulations for n = "+ n+ ": " + numTriangulations);
+      System.out.println("\nNumber of Triangulations for n = "+ n+ ": " + numTriangulations);
 
       //storing the metadata for the n we just computed, so n+1 and beyond can access
       int arrayDataEndIdx = arrayDataStartIdx + numTriangulations;
