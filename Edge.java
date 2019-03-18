@@ -11,16 +11,22 @@ public class Edge {
   private Vertex a;
   private Vertex b;
 
-  public Edge(Vertex a, Vertex b){
+  /*public Edge(Vertex a, Vertex b){
     this.a = a;
     this.b = b;
   }
-
+*/
   /*Duplicate constructor that
   creates a vertex from the given ints*/
   public Edge(int a, int b){
-    this.a = new Vertex(a);
-    this.b = new Vertex(b);
+    if(a > b){
+      this.a = new Vertex(b);
+      this.b = new Vertex(a);
+    }else{
+      this.a = new Vertex(a);
+      this.b = new Vertex(b);
+    }
+
   }
 
   public Vertex getA(){
@@ -49,8 +55,8 @@ public class Edge {
     direction of the diagonal.
   */
   public boolean equals(Edge e){
-    return (e.a.getPos() == a.getPos() && e.b.getPos() == b.getPos())
-    || (e.a.getPos() == b.getPos() && e.b.getPos() == a.getPos());
+    return (e.a.getPos() == a.getPos() && e.b.getPos() == b.getPos());
+    //|| (e.a.getPos() == b.getPos() && e.b.getPos() == a.getPos());
   }
 
 

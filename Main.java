@@ -42,32 +42,32 @@ public class Main{
     // 3 is a base case.
 
     Edge[] threeOne = new Edge[DIAG_NUM];
-    threeOne[0] = new Edge(new Vertex(0), new Vertex(2));
+    threeOne[0] = new Edge(0, 2);
 
     Edge[] fourOne = new Edge[DIAG_NUM];
-    fourOne[0] = new Edge(new Vertex(0), new Vertex(2));
+    fourOne[0] = new Edge(0, 2);
     Edge[] fourTwo = new Edge[DIAG_NUM];
-    fourTwo[0] = new Edge(new Vertex(1), new Vertex(3));
+    fourTwo[0] = new Edge(1, 3);
 
     Edge[] fiveOne = new Edge[DIAG_NUM];
-    fiveOne[0] = new Edge(new Vertex(0), new Vertex(2));
-    fiveOne[1] = new Edge(new Vertex(2), new Vertex(4));
+    fiveOne[0] = new Edge(0, 2);
+    fiveOne[1] = new Edge(2, 4);
 
     Edge[] fiveTwo = new Edge[DIAG_NUM];
-    fiveTwo[0] = new Edge(new Vertex(1), new Vertex(3));
-    fiveTwo[1] = new Edge(new Vertex(3), new Vertex(0));
+    fiveTwo[0] = new Edge(1, 3);
+    fiveTwo[1] = new Edge(0, 3);
 
     Edge[] fiveThree = new Edge[DIAG_NUM];
-    fiveThree[0] = new Edge(new Vertex(2), new Vertex(4));
-    fiveThree[1] = new Edge(new Vertex(4), new Vertex(1));
+    fiveThree[0] = new Edge(2, 4);
+    fiveThree[1] = new Edge(1, 4);
 
     Edge[] fiveFour = new Edge[DIAG_NUM];
-    fiveFour[0] = new Edge(new Vertex(3), new Vertex(0));
-    fiveFour[1] = new Edge(new Vertex(0), new Vertex(2));
+    fiveFour[0] = new Edge(0, 3);
+    fiveFour[1] = new Edge(0, 2);
 
     Edge[] fiveFive = new Edge[DIAG_NUM];
-    fiveFive[0] = new Edge(new Vertex(4), new Vertex(1));
-    fiveFive[1] = new Edge(new Vertex(1), new Vertex(3));
+    fiveFive[0] = new Edge(1, 4);
+    fiveFive[1] = new Edge(1, 3);
 
     triangulations[0] = threeOne;
     triangulations[1] = fourOne;
@@ -162,12 +162,13 @@ public class Main{
               // and triangulations[rightIdx]
               Edge[] triangulation = makeTriangulation(triangulations, leftIdx, rightIdx, left, right, startIndex1, startIndex2, n);
 
+
               //This is unfortunately very duplicate prone (as is the big challenge of this assignment)
               if(!containsTriangulation(triangulation, triangulations, arrayDataStartIdx, numTriangulations)){
                 triangulations[arrayDataStartIdx+numTriangulations] = triangulation;
                 numTriangulations ++;
                 if(n < 8){
-                  System.out.println("Triangulation #" + numTriangulations+ ":\n");
+                  System.out.println("\n Triangulation #" + numTriangulations+ " for n = " +n+":\n");
                   System.out.println(printTriangulation(triangulation));
                 }
               }
@@ -253,7 +254,7 @@ public class Main{
 
     int idxCounter = 0; //keeping track of where in tmpTri new vertices should go
 
-    tmpTri[idxCounter] = new Edge(new Vertex(newEdgeA), new Vertex(newEdgeB)); //adding in the diagonal
+    tmpTri[idxCounter] = new Edge(newEdgeA, newEdgeB); //adding in the diagonal
     idxCounter++;
 
     for(int i = 0; i < leftMap.size()-3; i++){ //has n-3 diagonals
@@ -269,6 +270,7 @@ public class Main{
         idxCounter++;
     }
     return tmpTri;
+    //return Arrays.sort(tmpTri, new EdgeComparator());
 
   }
   /*
