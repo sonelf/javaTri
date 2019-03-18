@@ -80,15 +80,13 @@ public class Main{
     boolean start = true;
     int numTriangulations = 0;
     int arrayDataStartIdx = triangulationsData[n-1].getEndIdx();
-    while(startIndex1%n != n-2 || start == true){
-      start = false;
-      boolean innerStart = true;
-      startIndex2 = (startIndex1+2)%n;
-      while((startIndex2%n < n || innerStart == true) && startIndex2 > startIndex1 && startIndex2 - startIndex1 < n -1){
-        innerStart = false;
 
+    IndexIterator it = new IndexIterator(startIndex1, startIndex2, n);
+    while(it.hasNextIndex()){
+        startIndex1 = it.getCurrentIndex1();
+        startIndex2 = it.getCurrentIndex2();
         HashMap<Integer, Integer> left = getLeftMap(startIndex1, startIndex2);
-        //System.out.println(left.toString());
+        System.out.println(startIndex1 + "& " + startIndex2);
 
         HashMap<Integer, Integer> right = getRightMap(startIndex2, startIndex1, n);
         //System.out.println(right.toString());
@@ -111,21 +109,19 @@ public class Main{
 
             Edge[] triangulation = makeTriangulation(triangulations, leftIdx, rightIdx, left, right, startIndex1, startIndex2, n);
             //create a polygon with triangulations from triangulations[leftIdx] and triangulations[rightIdx]
-          //  while(!containsTriangulation(triangulation, triangulations, arrayDataStartIdx, numTriangulations)){
-            //  triangulation = shiftTriangulation(triangulation, n);
+            //if(!containsTriangulation(triangulation, triangulations, arrayDataStartIdx, numTriangulations)){
+              triangulations[arrayDataStartIdx+numTriangulations] = triangulation;
+              numTriangulations ++;
             //}
-            triangulations[arrayDataStartIdx+numTriangulations] = triangulation;
-            numTriangulations ++;
-            System.out.println(printTriangulation(triangulation));
+
+
+            //System.out.println(printTriangulation(triangulation));
           }
         }
 
-        //generate list of triangulations for right
-
-        startIndex2 = (startIndex2+1)%n;
-      }
-      startIndex1 = (startIndex1 +1)%n;
+        it.updateIndices();
     }
+
     System.out.println("number of triangulations: " + numTriangulations);
     int arrayDataEndIdx = arrayDataStartIdx + numTriangulations;
     triangulationsData[n] = new ArrayData(arrayDataStartIdx, numTriangulations, arrayDataEndIdx);
