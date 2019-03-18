@@ -304,11 +304,14 @@ public class Main{
     int triIdx = arrayDataStartIdx;
     int ending = arrayDataStartIdx + numTriangulations;
     //System.out.println("here hello "+ arrayDataStartIdx + "ending: "+ ending);
-    printTriangulation(triangulations[triIdx]);
+    //printTriangulation(triangulations[triIdx]);
     while(triIdx < arrayDataStartIdx + numTriangulations){
       //System.out.println("hi???");
-      printTriangulation(triangulations[triIdx]);
-      if(equalsTriangulation(triangulation, triangulations[triIdx])){
+    //  printTriangulation(triangulations[triIdx]);
+      //if(equalsTriangulation(triangulation, triangulations[triIdx])){
+        //return true;
+      //}
+      if(Arrays.binarySearch(triangulations, arrayDataStartIdx, triIdx, triangulation, new TriangulationComparator()) != -1){
         return true;
       }
       triIdx++;
@@ -325,7 +328,7 @@ public class Main{
   public static boolean equalsTriangulation(Edge[] tri1, Edge[] tri2){
     int tri1Idx = 0;
     int tri2Idx = 0;
-
+/*
     while(tri1[tri1Idx] != null){
       boolean containsEdge = false;
       tri2Idx = 0;
@@ -339,7 +342,7 @@ public class Main{
         return false;
       }
       tri1Idx++;
-    }
+    }*/
     return true;
   }
 
