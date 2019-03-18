@@ -34,7 +34,8 @@ public class Edge {
   }
 
   public boolean equals(Edge e){
-    return (e.a == a && e.b == b) || (e.a == b && e.b == a);
+    return (e.a.getPos() == a.getPos() && e.b.getPos() == b.getPos())
+    || (e.a.getPos() == b.getPos() && e.b.getPos() == a.getPos());
   }
 
 

@@ -13,6 +13,11 @@ public class Main{
 
   public static void main(String[] args){
 
+    //Edge[] tri1 = {new Edge(0,4), new Edge(0,2), new Edge(2,4), null};
+    //Edge[] tri2 = {new Edge(0,2), new Edge(4,2), new Edge(4,0), null};
+
+    //System.out.println(equalsTriangulation(tri1, tri2));
+    //System.out.println(new Edge(0,4).equals(new Edge(4,0)));
     //providing n = 4 and n = 5 as base cases because they both have one set of unique diagonals
     // (as in, only one pair of rotateable vertices)
     Edge[][] triangulations = new Edge[TRI_SIZE][10];
@@ -86,13 +91,13 @@ public class Main{
         startIndex1 = it.getCurrentIndex1();
         startIndex2 = it.getCurrentIndex2();
         HashMap<Integer, Integer> left = getLeftMap(startIndex1, startIndex2);
-        System.out.println(startIndex1 + "& " + startIndex2);
+        //System.out.println(startIndex1 + "& " + startIndex2);
 
         HashMap<Integer, Integer> right = getRightMap(startIndex2, startIndex1, n);
         //System.out.println(right.toString());
         int leftSize = left.size();
         //if(leftSize < 3) continue;
-        System.out.println(startIndex1 + " , "+ startIndex2+ "  left size: "+ leftSize);
+        //System.out.println(startIndex1 + " , "+ startIndex2+ "  left size: "+ leftSize);
         int leftStartIdx = triangulationsData[leftSize].getStartIdx();
         int leftEndIdx = triangulationsData[leftSize].getEndIdx();
 
@@ -105,15 +110,16 @@ public class Main{
 
         for(int leftIdx = leftStartIdx; leftIdx < leftEndIdx; leftIdx++){
           for(int rightIdx = rightStartIdx; rightIdx < rightEndIdx; rightIdx++){
-            numTriangulations ++;
-
+            //numTriangulations ++;
             Edge[] triangulation = makeTriangulation(triangulations, leftIdx, rightIdx, left, right, startIndex1, startIndex2, n);
             //create a polygon with triangulations from triangulations[leftIdx] and triangulations[rightIdx]
-            //if(!containsTriangulation(triangulation, triangulations, arrayDataStartIdx, numTriangulations)){
+
+            if(!containsTriangulation(triangulation, triangulations, arrayDataStartIdx, numTriangulations)){
               triangulations[arrayDataStartIdx+numTriangulations] = triangulation;
               numTriangulations ++;
-            //}
-
+              System.out.println("Triangulation #\n" + numTriangulations);
+              System.out.println(printTriangulation(triangulation));
+            }
 
             //System.out.println(printTriangulation(triangulation));
           }
@@ -189,17 +195,19 @@ public class Main{
 
     for(int i = 0; i < leftMap.size()-3; i++){ //has n-3 diagonals
       Edge tmpDiagonal = leftTri[i];
-      Edge tmpDiagonalConverted = new Edge(leftMap.get(tmpDiagonal.getAInt()),leftMap.get(tmpDiagonal.getBInt()));
+      //System.out.println("tmpDiagonal" + tmpDiagonal);
+      /*Edge tmpDiagonalConverted = new Edge(leftMap.get(tmpDiagonal.getAInt()),leftMap.get(tmpDiagonal.getBInt()));
+      System.out.println("tmpDiagonalConverted: " + tmpDiagonalConverted.toString());
       boolean add = true;
       for(int j = 0; j < idxCounter; j++){
         if(tmpDiagonalConverted.equals(leftTri[i])){
           add = false;
         }
       }
-      if(add){
+      if(add){*/
         tmpTri[idxCounter] = new Edge(leftMap.get(tmpDiagonal.getAInt()), leftMap.get(tmpDiagonal.getBInt()));
         idxCounter++;
-      }
+      //}
 
     }
 
@@ -207,20 +215,20 @@ public class Main{
     for(int i = 0; i < rightMap.size()-3; i++){ //has n-3 diagonals
       Edge tmpDiagonal = rightTri[i];
       //System.out.println(Arrays.toString(rightTri));
-      Edge tmpDiagonalConverted = new Edge(rightMap.get(tmpDiagonal.getAInt()),rightMap.get(tmpDiagonal.getBInt()));
+    /*  Edge tmpDiagonalConverted = new Edge(rightMap.get(tmpDiagonal.getAInt()),rightMap.get(tmpDiagonal.getBInt()));
       boolean add = true;
       for(int j = 0; j < idxCounter; j++){
         if(tmpDiagonalConverted.equals(rightTri[i])){
           add = false;
         }
       }
-      if(add){
+      if(add){*/
         tmpTri[idxCounter] =new Edge(rightMap.get(tmpDiagonal.getAInt()), rightMap.get(tmpDiagonal.getBInt()));
         idxCounter++;
-      }
+      //}
 
     }
-
+    //System.out.println(Arrays.toString(tmpTri));
     return tmpTri;
   }
 
@@ -234,5 +242,44 @@ public class Main{
     }
     return s;
   }
+
+  public static boolean containsTriangulation(Edge[] triangulation, Edge[][] triangulations, int arrayDataStartIdx, int numTriangulations){
+    int triIdx = arrayDataStartIdx;
+    int ending = arrayDataStartIdx + numTriangulations;
+    //System.out.println("here hello "+ arrayDataStartIdx + "ending: "+ ending);
+    printTriangulation(triangulations[triIdx]);
+    while(triIdx < arrayDataStartIdx + numTriangulations){
+      //System.out.println("hi???");
+      printTriangulation(triangulations[triIdx]);
+      if(equalsTriangulation(triangulation, triangulations[triIdx])){
+        return true;
+      }
+      triIdx++;
+    }
+    return false;
+  }
+
+  public static boolean equalsTriangulation(Edge[] tri1, Edge[] tri2){
+    int tri1Idx = 0;
+    int tri2Idx = 0;
+
+    //System.out.println("here");
+    while(tri1[tri1Idx] != null){
+      boolean containsEdge = false;
+      tri2Idx = 0;
+      while(tri2[tri2Idx] != null){
+        if(tri1[tri1Idx].equals(tri2[tri2Idx])){
+          containsEdge = true;
+        }
+        tri2Idx++;
+      }
+      if(!containsEdge){
+        return false;
+      }
+      tri1Idx++;
+    }
+    return true;
+  }
+
 
 }

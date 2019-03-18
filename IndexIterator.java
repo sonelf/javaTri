@@ -39,7 +39,6 @@ public class IndexIterator{
       }
     }
     else{
-      System.out.println("here");
       currentIdx2 = currentIdx2+1;
     }
   }
