@@ -1,3 +1,12 @@
+/*
+  Name: Sonya Fucci
+  File: EdgeComparator.java
+  Desc: File that determines whether an edge is "greater" than another
+  edge where a smaller first coordinate comes before a larger first coordinate,
+  and if the first vertices are the same, then examine the second vertex.
+
+*/
+
 import java.util.Comparator;
 public class EdgeComparator implements Comparator<Edge>{
   public static final int E1_BEFORE_E2 = -1;

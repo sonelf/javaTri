@@ -11,9 +11,9 @@ import java.util.HashMap;
 import java.util.LinkedList;
 
 public class Main{
-  public static final int TRI_SIZE = 100000; //how many triangulations we are going to store
+  public static final int TRI_SIZE = 4000000; //how many triangulations we are going to store
   public static final int ARRAY_DATA_SIZE = 20; //how many diagonals we are going to store per triangulation (max)
-  public static final int DIAG_NUM = 10; //
+  public static final int DIAG_NUM = 17; //
   public static final int[] catalan = {1, 1, 2, 5, 14, 42, 132,
 429, 1430, 4862, 16796, 58786, 208012, 742900, 2674440,
  9694845, 35357670, 129644790, 477638700, 1767263190};
@@ -89,19 +89,19 @@ public class Main{
     vertices[2] = new Vertex(2);
     vertices[3] = new Vertex(3);
     vertices[4] = new Vertex(4);
-    //n = 6:
+
+    //will start by triangulating n=6
     int n = 5;
 
-    //triangulating:
-    while(n < 11){
+    //Triangulating process:
+    while(n < 20){ //attempts to go to n=20. doesn't quite work out.
       n++;
-
       //adding the most recent last vertex to the list of vertices we are working with
       vertices[n-1] = new Vertex(n-1);
 
       int numTriangulations = 0;
 
-      //determining where to put the
+      //determining where to put the newest triangulations
       int arrayDataStartIdx = triangulationsData[n-1].getEndIdx();
 
       //that helps us find new diagonals to split the n-gon with
@@ -109,7 +109,7 @@ public class Main{
       int startIndex1 = 0;
       int startIndex2 = 2;
 
-      //we use this to determine when we are done generating diagonals
+      //We use this to determine when we are done generating diagonals
       IndexIterator it = new IndexIterator(startIndex1, startIndex2, n);
 
       while(it.hasNextIndex()){ //while we haven't run out of diagonals to split by
@@ -165,13 +165,14 @@ public class Main{
 
               //This is unfortunately very duplicate prone (as is the big challenge of this assignment)
               if(!containsTriangulation(triangulation, triangulations, arrayDataStartIdx, numTriangulations)){
+                //adding the triangulation to our array
                 triangulations[arrayDataStartIdx+numTriangulations] = triangulation;
+
+                //making sure it is correctly sorted
+                Arrays.sort(triangulations, arrayDataStartIdx, arrayDataStartIdx+numTriangulations+1, new TriangulationComparator());
                 numTriangulations ++;
-                if(n < 8){
-                  System.out.println("\n Triangulation #" + numTriangulations+ " for n = " +n+":\n");
-                  System.out.println(printTriangulation(triangulation));
-                }
               }
+                
             }
           }
           //finding a new diagonal, rinse and repeat
@@ -261,15 +262,15 @@ public class Main{
       Edge tmpDiagonal = leftTri[i];
         tmpTri[idxCounter] = new Edge(leftMap.get(tmpDiagonal.getAInt()), leftMap.get(tmpDiagonal.getBInt()));
         idxCounter++;
-
     }
-    //repeat for right TODO: make a function
+    //constructing the diagonal on the right
     for(int i = 0; i < rightMap.size()-3; i++){ //has n-3 diagonals
       Edge tmpDiagonal = rightTri[i];
         tmpTri[idxCounter] =new Edge(rightMap.get(tmpDiagonal.getAInt()), rightMap.get(tmpDiagonal.getBInt()));
         idxCounter++;
     }
 
+    //ensuring the diagonals are sorted
      Arrays.sort(tmpTri, new EdgeComparator());
      return tmpTri;
 
@@ -303,48 +304,17 @@ public class Main{
   Edge[][] triangulations, int arrayDataStartIdx, int numTriangulations){
     int triIdx = arrayDataStartIdx;
     int ending = arrayDataStartIdx + numTriangulations;
-    //System.out.println("here hello "+ arrayDataStartIdx + "ending: "+ ending);
-    //printTriangulation(triangulations[triIdx]);
+
     while(triIdx < arrayDataStartIdx + numTriangulations){
-      //System.out.println("hi???");
-    //  printTriangulation(triangulations[triIdx]);
-      //if(equalsTriangulation(triangulation, triangulations[triIdx])){
-        //return true;
-      //}
-      if(Arrays.binarySearch(triangulations, arrayDataStartIdx, triIdx, triangulation, new TriangulationComparator()) != -1){
+
+      //searching for the triangulations out of the ones we have already generated
+      if(Arrays.binarySearch(triangulations, arrayDataStartIdx, triIdx+1,
+      triangulation, new TriangulationComparator()) >= 0){
         return true;
       }
       triIdx++;
     }
     return false;
   }
-
-  /*
-    Determines whether two triangulations are equal.
-    @param tri1 first of two triangulations we are comparing
-    @param tri2 second of two triangulations we are comparing
-    @return boolean whether or not they are the same
-  */
-  public static boolean equalsTriangulation(Edge[] tri1, Edge[] tri2){
-    int tri1Idx = 0;
-    int tri2Idx = 0;
-/*
-    while(tri1[tri1Idx] != null){
-      boolean containsEdge = false;
-      tri2Idx = 0;
-      while(tri2[tri2Idx] != null){
-        if(tri1[tri1Idx].equals(tri2[tri2Idx])){
-          containsEdge = true;
-        }
-        tri2Idx++;
-      }
-      if(!containsEdge){
-        return false;
-      }
-      tri1Idx++;
-    }*/
-    return true;
-  }
-
 
 }

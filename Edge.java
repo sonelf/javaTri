@@ -11,11 +11,6 @@ public class Edge {
   private Vertex a;
   private Vertex b;
 
-  /*public Edge(Vertex a, Vertex b){
-    this.a = a;
-    this.b = b;
-  }
-*/
   /*Duplicate constructor that
   creates a vertex from the given ints*/
   public Edge(int a, int b){
