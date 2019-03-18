@@ -59,5 +59,9 @@ public class Edge {
     //|| (e.a.getPos() == b.getPos() && e.b.getPos() == a.getPos());
   }
 
+  public boolean isNull(){
+    return (a == null) || (b == null);
+  }
+
 
 }

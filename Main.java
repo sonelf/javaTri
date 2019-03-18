@@ -269,8 +269,9 @@ public class Main{
         tmpTri[idxCounter] =new Edge(rightMap.get(tmpDiagonal.getAInt()), rightMap.get(tmpDiagonal.getBInt()));
         idxCounter++;
     }
-    return tmpTri;
-    //return Arrays.sort(tmpTri, new EdgeComparator());
+
+     Arrays.sort(tmpTri, new EdgeComparator());
+     return tmpTri;
 
   }
   /*
