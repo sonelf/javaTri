@@ -1,8 +1,10 @@
 import java.util.LinkedList;
+import java.util.HashMap;
 public class Main{
   public static final int TRI_SIZE = 100000;
   public static final int DIAG_SIZE = 20;
-  public static void Main(String[] args){
+
+  public static void main(String[] args){
 
     //providing n = 4 and n = 5 as base cases because they both have one set of unique diagonals
     // (as in, only one pair of rotateable vertices)
@@ -60,9 +62,67 @@ public class Main{
     int startIndex1 = 0;
     int startIndex2 = 2;
 
-    
+    //get the polygon to the left of the diagonal
+    // if it's a triangle, then leave startIndex1, startIndex2 in there
 
+    int offset = 0;
+    boolean start = true;
 
+    while((startIndex2+offset)%n != n-1 || start == true){
+      start = false;
 
+      HashMap<Integer, Integer> left = getLeftMap(startIndex1, startIndex2);
+      System.out.println(left.toString());
+
+      HashMap<Integer, Integer> right = getRightMap(startIndex2, startIndex1, n);
+      System.out.println(right.toString());
+      //startIndex1++;
+      startIndex2++;
+    }
+
+    //get polygon to the right of the diagonal and its size
   }
+
+  /*
+    Non-wrapping method to get the vertices of the polygon to the left of
+    the diagonal
+    @param start = the starting index of the diagonal we are using to split the polygon
+    @param end = the ending index of the diagonal we are using to split the polygon
+
+    @return hash map where the key is the"ith" index of the polygon,
+     and the value is the original index.
+  */
+  static HashMap<Integer, Integer> getLeftMap(int start, int end){
+    HashMap<Integer, Integer> tmpMap = new HashMap<Integer, Integer>();
+    int i = start;
+    int counter = 0;
+    while(i <= end){
+      tmpMap.put(counter, i);
+      counter++;
+      i++;
+    }
+    return tmpMap;
+  }
+
+  /*
+    Wrapping method to get the vertices of the polygon to the left of
+    the diagonal
+    @param start = the starting index of the diagonal we are using to split the polygon
+    @param end = the ending index of the diagonal we are using to split the polygon
+
+    @return hash map where the key is the "ith" index of the polygon,
+     and the value is the original index.
+  */
+  static HashMap<Integer, Integer> getRightMap(int start, int end, int n){
+    HashMap<Integer, Integer> tmpMap = new HashMap<Integer, Integer>();
+    int i = start;
+    int counter = 0;
+    while(i != end+1){
+      tmpMap.put(counter, i);
+      counter++;
+      i = (i+1)%n;
+    }
+    return tmpMap;
+  }
+
 }
