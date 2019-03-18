@@ -8,5 +8,11 @@ public class ArrayData{
     this.size = size;
     this.endIndex = endIndex;
   }
+  public int getStartIdx(){
+    return startIndex;
+  }
 
+  public int getEndIdx(){
+    return endIndex;
+  }
 }

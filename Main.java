@@ -1,52 +1,63 @@
-import java.util.LinkedList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedList;
+
+
 public class Main{
   public static final int TRI_SIZE = 100000;
   public static final int DIAG_SIZE = 20;
+  public static final int DIAG_NUM = 10;
+  public static final int[] catalan = {1, 1, 2, 5, 14, 42, 132,
+429, 1430, 4862, 16796, 58786, 208012, 742900, 2674440,
+ 9694845, 35357670, 129644790, 477638700, 1767263190};
 
   public static void main(String[] args){
 
     //providing n = 4 and n = 5 as base cases because they both have one set of unique diagonals
     // (as in, only one pair of rotateable vertices)
     Edge[][] triangulations = new Edge[TRI_SIZE][10];
-    ArrayData[] triangulationsData = new ArrayData[20];
+    ArrayData[] triangulationsData = new ArrayData[DIAG_SIZE];
 
-    Edge[] fourOne = new Edge[10];
+    Edge[] threeOne = new Edge[DIAG_NUM];
+    threeOne[0] = new Edge(new Vertex(0), new Vertex(2));
+
+    Edge[] fourOne = new Edge[DIAG_NUM];
     fourOne[0] = new Edge(new Vertex(0), new Vertex(2));
+    Edge[] fourTwo = new Edge[DIAG_NUM];
+    fourTwo[0] = new Edge(new Vertex(1), new Vertex(3));
 
-    Edge[] fourTwo = new Edge[10];
-    fourOne[0] = new Edge(new Vertex(1), new Vertex(3));
-
-    Edge[] fiveOne = new Edge[10];
+    Edge[] fiveOne = new Edge[DIAG_NUM];
     fiveOne[0] = new Edge(new Vertex(0), new Vertex(2));
     fiveOne[1] = new Edge(new Vertex(2), new Vertex(4));
 
-    Edge[] fiveTwo = new Edge[10];
+    Edge[] fiveTwo = new Edge[DIAG_NUM];
     fiveTwo[0] = new Edge(new Vertex(1), new Vertex(3));
     fiveTwo[1] = new Edge(new Vertex(3), new Vertex(0));
 
-    Edge[] fiveThree = new Edge[10];
+    Edge[] fiveThree = new Edge[DIAG_NUM];
     fiveThree[0] = new Edge(new Vertex(2), new Vertex(4));
     fiveThree[1] = new Edge(new Vertex(4), new Vertex(1));
 
-    Edge[] fiveFour = new Edge[10];
+    Edge[] fiveFour = new Edge[DIAG_NUM];
     fiveFour[0] = new Edge(new Vertex(3), new Vertex(0));
     fiveFour[1] = new Edge(new Vertex(0), new Vertex(2));
 
-    Edge[] fiveFive = new Edge[10];
+    Edge[] fiveFive = new Edge[DIAG_NUM];
     fiveFive[0] = new Edge(new Vertex(4), new Vertex(1));
     fiveFive[1] = new Edge(new Vertex(1), new Vertex(3));
 
-    triangulations[0] = fourOne;
-    triangulations[1] = fourTwo;
-    triangulations[2] = fiveOne;
-    triangulations[3] = fiveTwo;
-    triangulations[4] = fiveThree;
-    triangulations[5] = fiveFour;
-    triangulations[5] = fiveFive;
+    triangulations[0] = threeOne;
+    triangulations[1] = fourOne;
+    triangulations[2] = fourTwo;
+    triangulations[3] = fiveOne;
+    triangulations[4] = fiveTwo;
+    triangulations[5] = fiveThree;
+    triangulations[6] = fiveFour;
+    triangulations[7] = fiveFive;
 
-    triangulationsData[4] = new ArrayData(0, 2, 2);
-    triangulationsData[5] = new ArrayData(2, 5, 7);
+    triangulationsData[3] = new ArrayData(0, 1, 1);
+    triangulationsData[4] = new ArrayData(1, 2, 3);
+    triangulationsData[5] = new ArrayData(3, 5, 8);
 
     //n = 6:
     int n = 6;
@@ -67,20 +78,42 @@ public class Main{
 
     int offset = 0;
     boolean start = true;
-
+    int numTriangulations = 0;
     while((startIndex2+offset)%n != n-1 || start == true){
       start = false;
 
       HashMap<Integer, Integer> left = getLeftMap(startIndex1, startIndex2);
-      System.out.println(left.toString());
+      //System.out.println(left.toString());
 
       HashMap<Integer, Integer> right = getRightMap(startIndex2, startIndex1, n);
-      System.out.println(right.toString());
-      //startIndex1++;
+      //System.out.println(right.toString());
+
+      int leftSize = left.size();
+      int leftStartIdx = triangulationsData[leftSize].getStartIdx();
+      int leftEndIdx = triangulationsData[leftSize].getEndIdx();
+
+
+      int rightSize = right.size();
+      int rightStartIdx = triangulationsData[rightSize].getStartIdx();
+      int rightEndIdx = triangulationsData[rightSize].getEndIdx();
+
+
+      for(int leftIdx = leftStartIdx; leftIdx < leftEndIdx; leftIdx++){
+        for(int rightIdx = rightStartIdx; rightIdx < rightEndIdx; rightIdx++){
+          numTriangulations ++;
+          Edge[] triangulation = makeTriangulation(triangulations, leftIdx, rightIdx, left, right, startIndex1, startIndex2, n);
+          //create a polygon with triangulations from triangulations[leftIdx] and triangulations[rightIdx]
+          System.out.println(printTriangulation(triangulation));
+
+        }
+      }
+
+      //generate list of triangulations for right
+
       startIndex2++;
     }
 
-    //get polygon to the right of the diagonal and its size
+    System.out.println("number of triangulations: " + numTriangulations);
   }
 
   /*
@@ -123,6 +156,72 @@ public class Main{
       i = (i+1)%n;
     }
     return tmpMap;
+  }
+  /*
+
+
+  */
+  static Edge[] makeTriangulation(Edge[][]triangulations, int leftIdx, int rightIdx,
+   HashMap<Integer, Integer> leftMap, HashMap<Integer, Integer> rightMap, int newEdgeA, int newEdgeB, int n){
+    Edge[] tmpTri = new Edge[DIAG_NUM]; //what we will ultimately return
+
+    Edge[] leftTri = triangulations[leftIdx];
+    Edge[] rightTri = triangulations[rightIdx];
+    //System.out.println("right index: "+ rightIdx + triangulations[rightIdx][0]);
+
+    //System.out.println("leftTri: " +Arrays.toString(leftTri));
+    //System.out.println("rightTri: " +Arrays.toString(rightTri));
+    int idxCounter = 0;
+    tmpTri[idxCounter] = new Edge(new Vertex(newEdgeA), new Vertex(newEdgeB));
+    //System.out.println("tmpTri: " +Arrays.toString(tmpTri));
+    idxCounter++;
+
+    for(int i = 0; i < leftMap.size()-3; i++){ //has n-3 diagonals
+      Edge tmpDiagonal = leftTri[i];
+      Edge tmpDiagonalConverted = new Edge(leftMap.get(tmpDiagonal.getAInt()),leftMap.get(tmpDiagonal.getBInt()));
+      boolean add = true;
+      for(int j = 0; j < idxCounter; j++){
+        if(tmpDiagonalConverted.equals(leftTri[i])){
+          add = false;
+        }
+      }
+      if(add){
+        tmpTri[idxCounter] = new Edge(leftMap.get(tmpDiagonal.getAInt()), leftMap.get(tmpDiagonal.getBInt()));
+        idxCounter++;
+      }
+
+    }
+
+    //System.out.println("rightMap: "+ rightMap.toString());
+    for(int i = 0; i < rightMap.size()-3; i++){ //has n-3 diagonals
+      Edge tmpDiagonal = rightTri[i];
+      //System.out.println(Arrays.toString(rightTri));
+      Edge tmpDiagonalConverted = new Edge(rightMap.get(tmpDiagonal.getAInt()),rightMap.get(tmpDiagonal.getBInt()));
+      boolean add = true;
+      for(int j = 0; j < idxCounter; j++){
+        if(tmpDiagonalConverted.equals(rightTri[i])){
+          add = false;
+        }
+      }
+      if(add){
+        tmpTri[idxCounter] =new Edge(rightMap.get(tmpDiagonal.getAInt()), rightMap.get(tmpDiagonal.getBInt()));
+        idxCounter++;
+      }
+
+    }
+
+    return tmpTri;
+  }
+
+  public static String printTriangulation(Edge[] triangulation){
+    String s = "";
+    for(int i = 0; i < triangulation.length; i++){
+      if(triangulation[i] == null){
+        return s;
+      }
+      s = s + triangulation[i].toString();
+    }
+    return s;
   }
 
 }
