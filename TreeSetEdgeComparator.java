@@ -11,6 +11,7 @@
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.TreeSet;
+
 public class TreeSetEdgeComparator implements Comparator<TreeSet<Edge>>{
   public static final int TS1_BEFORE_TS2 = -1;
   public static final int TS2_BEFORE_TS1 = 1;

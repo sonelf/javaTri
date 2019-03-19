@@ -72,13 +72,6 @@ public class Main{
             into two sub-polygons of n. In order to get the previously calculated triangulations
             for these n-gons, we need to make sure we have consistent vertices.
 
-            For example, consider a 6-gon being split into the triangle (0,1,2) and
-            pentagon (2,3,4,5,0) (in this case, startIndex1 = 0, startIndex2 = 2).
-            The 5-gons are stored in triangulations only in terms of their
-            vertices: (0,1,2,3,4). So when we access the triangulations for the 5-gon,
-            we need to to convert them from the diagonals of the (0,1,2,3,4)-gon into the diagonals
-            of the (2,3,4,5,0)-gon. The HashMap is just the right tool for this.
-
           */
           HashMap<Integer, Integer> left = getLeftMap(startIndex1, startIndex2);
           HashMap<Integer, Integer> right = getRightMap(startIndex2, startIndex1, n);
