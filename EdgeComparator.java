@@ -12,6 +12,7 @@ public class EdgeComparator implements Comparator<Edge>{
   public static final int E1_BEFORE_E2 = -1;
   public static final int E2_BEFORE_E1 = 1;
   public static final int EQUAL = 0;
+  
   @Override
   public int compare(Edge e1, Edge e2){
     if(e1 == null && e2 == null){
